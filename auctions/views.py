@@ -3,7 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from flask import request_started
 
+from .forms import CreateListings
 from .models import User
 
 
@@ -61,3 +64,15 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+@login_required
+def create(request):
+    if request.method == "POST":
+        ...
+    else:
+        form = CreateListings()
+
+    return render(request, "auctions/create.html", {
+        "form": form,
+    })

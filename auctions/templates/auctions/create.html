@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Create Listing
+{% endblock %}
+
+{% block body %}
+    {% load widget_tweaks %}
+        {% render_field form.title class+="form-control mb-3" placeholder="Title" %}
+        {% render_field form.description class+="form-control mb-3" placeholder="Description" %}
+        {% render_field form.bid class+="form-control mb-3" placeholder="Initial Bid" %}
+        <button class="btn btn-primary" type="submit">Create</button>
+{% endblock %}
