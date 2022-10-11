@@ -69,9 +69,9 @@ def register(request):
 @login_required
 def create(request):
     if request.method == "POST":
-        ...
-    else:
-        form = CreateListings()
+        return HttpResponse("Invalid form")
+
+    form = CreateListings()
 
     return render(request, "auctions/create.html", {
         "form": form,
