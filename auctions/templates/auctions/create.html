@@ -6,9 +6,12 @@
 
 {% block body %}
     {% load widget_tweaks %}
-    <form action="{% url 'create' %}" method="post">
-        {% csrf_token %}
-            {{ form }}
-        <button class="btn btn-primary" type="submit">Create Listing</button>
-    </form>
+        {% if message %}
+            <h3 class="mb-3">{{ message }}</h3>
+        {% endif %}
+        <form action="{% url 'create' %}" method="post">
+            {% csrf_token %}
+                {{ form }}
+            <button class="btn btn-primary" type="submit">Create Listing</button>
+        </form>
 {% endblock %}

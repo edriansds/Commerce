@@ -7,11 +7,14 @@ from django.contrib.auth.decorators import login_required
 from flask import request_started
 
 from .forms import CreateListings
-from .models import User
+from .models import User, AuctionListings
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    auctions_listings = AuctionListings.objects.all().values()
+    return render(request, "auctions/index.html", {
+        "auction_listings": auctions_listings,
+    })
 
 
 def login_view(request):
@@ -69,13 +72,20 @@ def register(request):
 @login_required
 def create(request):
     if request.method == "POST":
+        
         # Check if the form is valid
         form = CreateListings(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse("index"))
         else:
-            return HttpResponseRedirect(reverse("create"))
+
+            # If any validation problem
+            form = CreateListings()
+            return render(request, "auctions/create.html",{
+                "message": "Fill all the required fields",
+                "form": form,
+            })
     else:
         form = CreateListings()
     return render(request, "auctions/create.html", {

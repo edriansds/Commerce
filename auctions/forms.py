@@ -5,11 +5,11 @@ from auctions.models import AuctionListings
 class CreateListings(forms.ModelForm):
     class Meta:
         model = AuctionListings
-        fields = ["title", "description", "initial_bid", "category", "image"]
+        fields = ["title", "description", "bid", "category", "image"]
         labels = {
             "title": "Title",
             "description": "Description",
-            "initial_bid": "Initial Bid",
+            "bid": "Initial Bid",
             "category": "Category",
             "image": "Image",
         }   

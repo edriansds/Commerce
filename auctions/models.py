@@ -15,9 +15,9 @@ class AuctionListings(models.Model):
     )
     title = models.CharField(max_length=48)
     description = models.TextField()
-    initial_bid = models.DecimalField(max_digits=10, decimal_places=2)
+    bid = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=24, null=True, blank=True, choices=CATEGORIES)
-    image = models.ImageField(null=True, blank=True)
+    image = models.URLField(null=True, blank=True)
 
 class Bids(models.Model):
     price = models.DecimalField(max_digits=20, decimal_places=2)
