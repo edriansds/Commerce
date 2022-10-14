@@ -8,7 +8,7 @@
     {% load widget_tweaks %}
     <form action="{% url 'create' %}" method="post">
         {% csrf_token %}
-        {{ form }}
+            {{ form }}
         <button class="btn btn-primary" type="submit">Create Listing</button>
     </form>
 {% endblock %}
