@@ -4,7 +4,7 @@
     <h2>Active Listings</h2>
     {% load widget_tweaks %}
         {% for listings in auction_listings %}
-            <div class="mb-3 border d-flex">
+            <a class="mb-3 border d-flex text-body" href="{% url 'listing' %}">
                 {% if not listings.image %}
                     <img class="w-25 h-auto mx-5" src="https://static.vecteezy.com/ti/vetor-gratis/p3/5747948-icone-saco-modelo-saco-de-compras-icone-gr%C3%A1tis-vetor.jpg">
                 {% else %}
@@ -16,6 +16,6 @@
                     <p>{{ listings.description }}</p>
                     <p><b>Category: </b>{{ listings.category }}</p>
                 </div>
-            </div>
+            </a>
         {% endfor %}
 {% endblock %}

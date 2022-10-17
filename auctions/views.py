@@ -12,6 +12,7 @@ from .models import User, AuctionListings
 
 def index(request):
     auctions_listings = AuctionListings.objects.all().values()
+    print(auctions_listings)
     return render(request, "auctions/index.html", {
         "auction_listings": auctions_listings,
     })
@@ -91,3 +92,8 @@ def create(request):
     return render(request, "auctions/create.html", {
         "form": form,
     })
+
+
+def listing(request):
+    
+    return HttpResponse("TODO")
