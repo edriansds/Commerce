@@ -7,11 +7,11 @@ class User(AbstractUser):
 
 class AuctionListings(models.Model):
     CATEGORIES = (
-        ("1", "Eletronic"),
-        ("2", "Toys"),
-        ("3", "Fashion"),
-        ("4", "Home"),
-        ("5", "Food")
+        ("Tech", "Eletronic"),
+        ("Toys", "Toys"),
+        ("Fashion", "Fashion"),
+        ("Home", "Home"),
+        ("Food", "Food")
     )
     title = models.CharField(max_length=48)
     description = models.TextField()

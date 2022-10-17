@@ -4,18 +4,18 @@
     <h2>Active Listings</h2>
     {% load widget_tweaks %}
         {% for listings in auction_listings %}
-            <a class="mb-3 border d-flex text-body" href="{% url 'listing' %}">
+            <div class="mb-3 border d-flex text-body">
                 {% if not listings.image %}
                     <img class="w-25 h-auto mx-5" src="https://static.vecteezy.com/ti/vetor-gratis/p3/5747948-icone-saco-modelo-saco-de-compras-icone-gr%C3%A1tis-vetor.jpg">
                 {% else %}
                     <img class="w-25 h-auto mx-5" src="{{ listings.image }}">
                 {% endif %}
-                <div class="pt-4">
+                <a class="pt-4" href="/listings/{{ listings.id }}">
                     <h4>{{ listings.title }}</h4>
                     <p><b>Price: </b>${{ listings.bid }}</p>
                     <p>{{ listings.description }}</p>
                     <p><b>Category: </b>{{ listings.category }}</p>
-                </div>
-            </a>
+                </a>
+            </div>
         {% endfor %}
 {% endblock %}

@@ -4,7 +4,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from flask import request_started
 
 from .forms import CreateListings
 from .models import User, AuctionListings
@@ -12,7 +11,6 @@ from .models import User, AuctionListings
 
 def index(request):
     auctions_listings = AuctionListings.objects.all().values()
-    print(auctions_listings)
     return render(request, "auctions/index.html", {
         "auction_listings": auctions_listings,
     })
@@ -94,6 +92,11 @@ def create(request):
     })
 
 
-def listing(request):
-    
-    return HttpResponse("TODO")
+def listing(request, listing_id):
+    if request.method == "POST":
+        pass
+    else:
+        listing = AuctionListings(id=listing_id)
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+        })
