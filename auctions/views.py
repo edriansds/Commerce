@@ -96,7 +96,7 @@ def listing(request, listing_id):
     if request.method == "POST":
         pass
     else:
-        listing = AuctionListings(id=listing_id)
+        listing = AuctionListings.objects.get(id=listing_id)
         return render(request, "auctions/listing.html", {
             "listing": listing,
         })
