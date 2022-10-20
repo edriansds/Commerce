@@ -10,11 +10,10 @@
                 {% else %}
                     <img class="w-25 h-auto mx-5" src="{{ listings.image }}">
                 {% endif %}
-                <a class="pt-4" href="/listings/{{ listings.id }}">
+                <a class="pt-4 text-dark" href="/listings/{{ listings.id }}">
                     <h4>{{ listings.title }}</h4>
                     <p><b>Price: </b>${{ listings.bid }}</p>
                     <p>{{ listings.description }}</p>
-                    <p><b>Category: </b>{{ listings.category }}</p>
                 </a>
             </div>
         {% endfor %}

@@ -1,12 +1,45 @@
 {% extends "auctions/layout.html" %}
 
 {% block title %}
-
+    Auctions
 {% endblock %}
 
 {% block body %}
     <h2>{{ listing.title }}</h2>
     {% if user.is_authenticated %}
-    {% else %}
+        <button type="button" class="btn btn-secondary px-1 py-0 mb-2"><b class="text-white" style="font-size: 13px;">Whatchlist</b></button>
     {% endif %}
+    
+    {% if listing.image %}
+        <img class="w-25 h-auto d-block mb-3" src="{{ listing.image }}">
+    {% else %}
+        <img class="w-25 h-auto d-block" src="https://static.vecteezy.com/ti/vetor-gratis/p3/5747948-icone-saco-modelo-saco-de-compras-icone-gr%C3%A1tis-vetor.jpg">
+    {% endif %}
+    <p class="fs-4" style="font-size: 20px;">{{ listing.description }}</p>
+    <h3 class="mb-3">${{ listing.bid }}</h3>
+
+    <form action='{{ listing.id }}' method="post">
+        {% csrf_token %}
+            {{ form }}
+        <button type="submit" class="btn btn-primary mb-4">Place Bid</button>
+    </form>
+    <h4>Details</h4>
+    <ul>
+        <li>Listed by: <a class="text-primary">{{ user.get_username }}</a></li>
+        <li>
+            Category: 
+            {% if listing.category %}
+                {{ listing.category }}
+            {% else %}
+                No category listed
+            {% endif %}
+        </li>
+    </ul>
+    <form action="{{ listings_id }}" method="post">
+        {% csrf_token %}
+        <h4 class="mb-3">Make a comment</h4>
+            {{ comment_form }}
+        <button type="submit" class="btn btn-primary mb-3">Submit</button>
+    </form>
+    
 {% endblock %}

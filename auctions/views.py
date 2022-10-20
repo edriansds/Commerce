@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .forms import CreateListings
-from .models import User, AuctionListings
+from .forms import CreateListings, PlaceBid, WriteComments
+from .models import User, AuctionListings, Bids, Comments
 
 
 def index(request):
@@ -94,9 +94,13 @@ def create(request):
 
 def listing(request, listing_id):
     if request.method == "POST":
-        pass
+        return HttpResponse("")
     else:
         listing = AuctionListings.objects.get(id=listing_id)
+        form = PlaceBid()
+        comment_form = WriteComments()
         return render(request, "auctions/listing.html", {
             "listing": listing,
+            "form": form,
+            "comment_form": comment_form,
         })
