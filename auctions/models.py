@@ -1,6 +1,7 @@
 from email.policy import default
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from sqlalchemy import ForeignKey
 
 class User(AbstractUser):
     pass
@@ -30,3 +31,4 @@ class Comments(models.Model):
     auction_listings = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
     text = models.TextField(default="")
     timedate = models.DateTimeField(auto_now=True)
+

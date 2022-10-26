@@ -1,3 +1,4 @@
+from django import http
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -94,13 +95,23 @@ def create(request):
 
 def listing(request, listing_id):
     if request.method == "POST":
-        return HttpResponse("")
+        if "text" in request.POST:
+            
+            # Validate Comments
+            form = WriteComments(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponse(reverse(listing))
+        elif "price" in request.POST:
+            return HttpResponse("price")
     else:
         listing = AuctionListings.objects.get(id=listing_id)
         form = PlaceBid()
         comment_form = WriteComments()
+        comments = Comments.objects.filter(auction_listings=listing_id)
         return render(request, "auctions/listing.html", {
             "listing": listing,
             "form": form,
+            "comments": comments,
             "comment_form": comment_form,
         })

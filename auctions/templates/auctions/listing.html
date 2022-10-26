@@ -7,7 +7,9 @@
 {% block body %}
     <h2>{{ listing.title }}</h2>
     {% if user.is_authenticated %}
-        <button type="button" class="btn btn-secondary px-1 py-0 mb-2"><b class="text-white" style="font-size: 13px;">Whatchlist</b></button>
+    <form action="{{ listings.id }}" method="post">
+        <button type="submit" class="btn btn-secondary px-1 py-0 mb-2"><b class="text-white" style="font-size: 13px;">Whatchlist</b></button>
+    </form>
     {% endif %}
     
     {% if listing.image %}
@@ -25,7 +27,7 @@
     </form>
     <h4>Details</h4>
     <ul>
-        <li>Listed by: <a class="text-primary">{{ user.get_username }}</a></li>
+        <li>Listed by: <a class="text-primary">a</a></li>
         <li>
             Category: 
             {% if listing.category %}
@@ -35,11 +37,18 @@
             {% endif %}
         </li>
     </ul>
-    <form action="{{ listings_id }}" method="post">
-        {% csrf_token %}
-        <h4 class="mb-3">Make a comment</h4>
-            {{ comment_form }}
-        <button type="submit" class="btn btn-primary mb-3">Submit</button>
-    </form>
-    
+
+    {% for comment in comments %}
+        {{ comment }}
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <form action="{{ listings_id }}" method="post">
+            {% csrf_token %}
+            <h4 class="mb-3">Make a comment</h4>
+                {{ comment_form }}
+            <button type="submit" class="btn btn-primary mb-3">Submit</button>
+        </form>
+    {% endif %}
+
 {% endblock %}
