@@ -5,11 +5,27 @@
 {% endblock %}
 
 {% block body %}
-    <h2>{{ listing.title }}</h2>
+    {{ bid.user }}
+    {% if user.get_username|cut:" " == bid.username|cut:" " and not listing.active %}
+        <div class="alert alert-success" role="alert">
+            You won this auction! Congratulations!
+        </div>
+    {% endif %}
+    <h2 class="d-inline">{{ listing.title }}</h2>
     {% if user.is_authenticated %}
-    <form action="{{ listings.id }}" method="post">
-        <button type="submit" class="btn btn-secondary px-1 py-0 mb-2"><b class="text-white" style="font-size: 13px;">Whatchlist</b></button>
-    </form>
+        {% if watchlist %}
+            <form action="{% url 'listings' listing.id %}" method="post">
+                {% csrf_token %}
+                    <input type="hidden" name="wl" value="{{ listing.id }}">
+                    <button type="submit" class="btn btn-secondary px-1 py-0 my-2"><b class="text-white" style="font-size: 13px;">Remove from Whatchlist</b></button>
+            </form>            
+        {% else %}
+            <form action="{% url 'listings' listing.id %}" method="post">
+                {% csrf_token %}
+                    <input type="hidden" name="wl" value="{{ listing.id }}">
+                    <button type="submit" class="btn btn-secondary px-1 py-0 mb-2"><b class="text-white" style="font-size: 13px;">Whatchlist</b></button>
+            </form>
+        {% endif %}
     {% endif %}
     
     {% if listing.image %}
@@ -17,17 +33,20 @@
     {% else %}
         <img class="w-25 h-auto d-block" src="https://static.vecteezy.com/ti/vetor-gratis/p3/5747948-icone-saco-modelo-saco-de-compras-icone-gr%C3%A1tis-vetor.jpg">
     {% endif %}
+    
     <p class="fs-4" style="font-size: 20px;">{{ listing.description }}</p>
-    <h3 class="mb-3">${{ listing.bid }}</h3>
+    <h3 class="mb-3">${{ bid.bid }}</h3>
+    <p class="mb-1" style="font-size: 0.98em;">Current bid by <b>{{ bid.username }}</b></p>
 
-    <form action='{{ listing.id }}' method="post">
-        {% csrf_token %}
-            {{ form }}
-        <button type="submit" class="btn btn-primary mb-4">Place Bid</button>
+    <form action="{% url 'listings' listing.id %}" method="post">
+        {% load widget_tweaks %}
+            {% csrf_token %}        
+                {% render_field bid_form.bid placeholder=bid_form.bid.label %}
+                <button type="submit" class="btn btn-primary mb-4">Place Bid</button>
     </form>
     <h4>Details</h4>
     <ul>
-        <li>Listed by: <a class="text-primary">a</a></li>
+        <li>Listed by: <a class="text-primary">{{ listing.user }}</a></li>
         <li>
             Category: 
             {% if listing.category %}
@@ -38,12 +57,28 @@
         </li>
     </ul>
 
-    {% for comment in comments %}
-        {{ comment }}
-    {% endfor %}
+    {% if user.get_username|cut:" " == listing.user|cut:" " and listing.active %}
+        <form action="{% url 'listings' listing.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="cb" value="{{ listing.id }}">
+            <button type="submit" class="btn btn-warning mb-3">Close Bid</button>
+        </form>
+    {% endif %}
+    
+    <h4>Comments</h4>
+    {% if comments %}
+        {% for comment in comments %}
+            <div class="mb-3 border px-2 rounded">
+                <p>{{ comment.text }}</p>
+                <span class="text-dark" style="font-size: 13px;">{{ comment.user }} | {{ comment.timedate }}</span>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Be the first to comment!</p>
+    {% endif %}
 
     {% if user.is_authenticated %}
-        <form action="{{ listings_id }}" method="post">
+        <form action="{% url 'listings' listing.id %}" method="post">
             {% csrf_token %}
             <h4 class="mb-3">Make a comment</h4>
                 {{ comment_form }}

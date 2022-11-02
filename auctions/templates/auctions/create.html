@@ -10,7 +10,8 @@
     {% endif %}
     <form action="{% url 'create' %}" method="post">
         {% csrf_token %}
-            {{ form }}
+            {{ listing_form }}
+            {{ bid_form }}
         <button class="btn btn-primary" type="submit">Create Listing</button>
     </form>
 {% endblock %}

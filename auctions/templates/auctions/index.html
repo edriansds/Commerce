@@ -2,19 +2,21 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-    {% load widget_tweaks %}
-        {% for listings in auction_listings %}
-            <div class="mb-3 border d-flex text-body">
-                {% if not listings.image %}
-                    <img class="w-25 h-auto mx-5" src="https://static.vecteezy.com/ti/vetor-gratis/p3/5747948-icone-saco-modelo-saco-de-compras-icone-gr%C3%A1tis-vetor.jpg">
-                {% else %}
-                    <img class="w-25 h-auto mx-5" src="{{ listings.image }}">
-                {% endif %}
-                <a class="pt-4 text-dark" href="/listings/{{ listings.id }}">
-                    <h4>{{ listings.title }}</h4>
-                    <p><b>Price: </b>${{ listings.bid }}</p>
-                    <p>{{ listings.description }}</p>
-                </a>
-            </div>
+    {% load auctions_extras %}
+        {% for listing, bid in listings|zip:bids %}
+            {% if listing.active %}            
+                <div class="mb-3 border d-flex text-body">
+                    {% if not listing.image %}
+                        <img class="w-25 h-auto mx-5" src="https://static.vecteezy.com/ti/vetor-gratis/p3/5747948-icone-saco-modelo-saco-de-compras-icone-gr%C3%A1tis-vetor.jpg">
+                    {% else %}
+                        <img class="w-25 h-auto mx-5" src="{{ listing.image }}">
+                    {% endif %}
+                    <a class="pt-4 text-dark" href="{% url 'listings' listing.id %}">
+                        <h4>{{ listing.title }}</h4>
+                        <p><b>Price: </b>${{ bid.bid }}</p>
+                        <p>{{ listing.description }}</p>
+                    </a>
+                </div>
+            {% endif %}
         {% endfor %}
 {% endblock %}
