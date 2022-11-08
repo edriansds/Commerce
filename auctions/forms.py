@@ -1,9 +1,9 @@
 from django import forms
-from auctions.models import AuctionListings, Bids, Comments
+from auctions.models import Listings, Bids, Comments
 
 class CreateListings(forms.ModelForm):
     class Meta:
-        model = AuctionListings
+        model = Listings
         fields = ["title", "description", "category", "image"]
         labels = {
             "title": "Title",

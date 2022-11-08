@@ -1,10 +1,11 @@
-{% extends 'auctions/layout.html' %}
+{% extends "auctions/layout.html" %}
 
 {% block title %}
-    Watchlist
+    {{ category }}
 {% endblock %}
 
 {% block body %}
+    <h2>{{ category }}</h2>
     {% load auctions_extras %}
         {% for listing, bid in listings|zip:bids %}
             <div class="mb-3 border d-flex text-body">
@@ -15,7 +16,7 @@
                 {% endif %}
                 <a class="pt-4 text-dark" href="{% url 'listings' listing.id %}">
                     <h4>{{ listing.title }}</h4>
-                    <p><b>Price: </b>{{ bid.bid }}</p>
+                    <p><b>Price: </b>${{ bid.bid }}</p>
                     <p>{{ listing.description }}</p>
                 </a>
             </div>

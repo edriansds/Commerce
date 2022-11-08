@@ -6,12 +6,13 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .forms import CreateListings, PlaceBid, WriteComments
-from .models import User, AuctionListings, Bids, Comments, Watchlist
+from .models import User, Listings, Bids, Comments, Watchlist
 
 
 def index(request):
-    listings = AuctionListings.objects.all().values()
-    bid = Bids.objects.all().values()
+    listings = Listings.objects.all()
+    bid = Bids.objects.all().order_by("listing_id", "-bid")
+
     return render(request, "auctions/index.html", {
         "listings": listings,
         "bids": bid,
@@ -85,7 +86,7 @@ def create(request):
 
             bid = bid_form.save(commit=False)
             bid.user = request.user
-            bid.listing = AuctionListings(listing.id)
+            bid.listing = Listings(listing.id)
             bid.save()
 
             return HttpResponseRedirect(reverse("index"))
@@ -115,19 +116,20 @@ def listing(request, listing_id):
 
         # Close a bid
         if "cb" in request.POST:
-            AuctionListings.objects.filter(id=listing_id).update(active=False)
+            Listings.objects.filter(id=listing_id).update(active=False)
 
             return HttpResponseRedirect(reverse("listings", args=[listing_id]))
 
         # Add or remove from watchlist
         elif "wl" in request.POST:
-            listing = AuctionListings.objects.get(id=listing_id)
-            obj, created = Watchlist.objects.get_or_create(user=request.user)
+            listing = Listings.objects.get(id=listing_id)
+            try:
+                watchlist = Watchlist.objects.get(user=request.user, listing=listing_id)
+                watchlist.delete()
+            except:
+                w = Watchlist(user=request.user, listing=listing)
+                w.save()
 
-            if listing in obj.listing.all():
-                obj.listing.remove(listing)
-            else:
-                obj.listing.add(listing)    
             return HttpResponseRedirect(reverse("listings", args=[listing_id]))
 
         elif "text" in request.POST:
@@ -136,7 +138,7 @@ def listing(request, listing_id):
             form = WriteComments(request.POST)
             if form.is_valid():
                 comment = form.save(commit=False)
-                comment.listing = AuctionListings(id=listing_id)
+                comment.listing = Listings(id=listing_id)
                 comment.user = request.user
                 comment.save()
 
@@ -158,13 +160,13 @@ def listing(request, listing_id):
                 
                 actual_bid = form.save(commit=False)
                 actual_bid.user = request.user
-                actual_bid.listing = AuctionListings(id=listing_id)
+                actual_bid.listing = Listings(id=listing_id)
                 actual_bid.save()
             
             # Validate Price
             return HttpResponseRedirect(reverse("listings", args=[listing_id]))
     else:
-        listing = AuctionListings.objects.get(id=listing_id)
+        listing = Listings.objects.get(id=listing_id)
 
         # Get all the bid information
         bids = Bids.objects.filter(listing=listing_id).values()
@@ -176,7 +178,7 @@ def listing(request, listing_id):
         comment_form = WriteComments()
         comments = Comments.objects.filter(listing=listing_id)
         try:
-            watchlist = Watchlist.objects.filter(user=request.user, listing=listing_id)
+            watchlist = Watchlist.objects.filter(user=request.user, listing=listing_id).values()
         except TypeError:
             watchlist = None
 
@@ -193,10 +195,46 @@ def listing(request, listing_id):
 
 @login_required
 def watchlist(request):
-    watchlist = Watchlist.objects.values()
-    print(watchlist)
+    watchlist = Watchlist.objects.filter(user=request.user).values("listing")
+    wl = [l["listing"] for l in watchlist]
+    listings = Listings.objects.filter(id__in=wl)
+
+    bids = Bids.objects.filter(
+        user=request.user,
+        listing__in=listings
+    ).order_by("listing_id", "-bid")
 
     context = {
-        "watchlist": watchlist,
+        "listings": listings,
+        "bids": bids,
     }
     return render(request, "auctions/watchlist.html", context)
+
+
+def categories(request):
+    categories = [c[0] for c in Listings.CATEGORIES]
+    return render(request, "auctions/categories.html", {
+        "categories": categories,
+    })
+
+
+def category(request, category):
+    if not category in [c[0] for c in Listings.CATEGORIES]:
+        return HttpResponseRedirect(reverse("categories"))
+
+    listings = Listings.objects.filter(
+        user=request.user,
+        category=category, 
+        active=True
+    )
+    bids = Bids.objects.filter(
+        user=request.user,
+        listing__in=listings
+    ).order_by("listing_id", "-bid").only("bid")
+
+    context = {
+        "listings": listings,
+        "bids": bids,
+        "category": category,
+    }
+    return render(request, "auctions/category.html", context)

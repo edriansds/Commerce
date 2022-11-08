@@ -8,7 +8,7 @@ class User(AbstractUser):
     pass
 
 
-class AuctionListings(models.Model):
+class Listings(models.Model):
     CATEGORIES = (
         ("Eletronic", "Eletronic"),
         ("Toys", "Toys"),
@@ -24,18 +24,20 @@ class AuctionListings(models.Model):
     active = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.id} - {self.title}"
+
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listing = models.ManyToManyField(AuctionListings)
+    listing = models.ForeignKey(Listings, on_delete=models.CASCADE)
 
 class Bids(models.Model):
     bid = models.DecimalField(max_digits=20, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listing = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listings, on_delete=models.CASCADE)
 
 class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listing = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listings, on_delete=models.CASCADE)
     text = models.TextField(default="")
     timedate = models.DateTimeField(auto_now=True)
-
